@@ -4,12 +4,12 @@ from pydantic import BaseModel
 from dotenv import load_dotenv
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langgraph.prebuilt import create_react_agent
-from tools import hitung_kalori_makanan
+from tools import hitung_kalori_makanan, hitung_kebutuhan_nutrisi
 load_dotenv()
 
 # --- 1. SETUP AGENT ---
 model = ChatGoogleGenerativeAI(model="models/gemini-3.1-flash-lite-preview", temperature=0)
-tools = [hitung_kalori_makanan]
+tools = [hitung_kalori_makanan,hitung_kebutuhan_nutrisi]
 agent_executor = create_react_agent(model, tools)
 
 # --- 2. SETUP FASTAPI ---

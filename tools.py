@@ -21,3 +21,20 @@ def hitung_bmi(berat_kg: float, tinggi_cm: float) -> str:
     tinggi_m = tinggi_cm / 100
     bmi = berat_kg / (tinggi_m ** 2)
     return f"BMI kamu adalah {bmi:.2f}"
+
+@tool
+def hitung_kebutuhan_nutrisi(berat_badan_kg: float) -> str:
+    """
+    Gunakan tool ini untuk menghitung kebutuhan nutrisi harian berdasarkan berat badan.
+    Input: berat_badan_kg (float) - berat badan dalam kilogram
+    """
+    kalori = berat_badan_kg * 30
+    protein = berat_badan_kg * 1.2
+    air = berat_badan_kg * 35
+
+    return (
+        f"Kebutuhan harian berdasarkan berat badan {berat_badan_kg} kg:\n"
+        f"- Kalori: {kalori:.0f} kkal\n"
+        f"- Protein: {protein:.1f} gram\n"
+        f"- Air minum: {air:.0f} ml"
+    )
