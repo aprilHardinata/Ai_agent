@@ -8,7 +8,7 @@ from tools import hitung_kalori_makanan, hitung_kebutuhan_nutrisi
 load_dotenv()
 
 # --- 1. SETUP AGENT ---
-model = ChatGoogleGenerativeAI(model="models/gemini-3.1-flash-lite-preview", temperature=0)
+model = ChatGoogleGenerativeAI(model="models/gemini-2.5-flash-lite", temperature=0)
 tools = [hitung_kalori_makanan,hitung_kebutuhan_nutrisi]
 agent_executor = create_react_agent(model, tools)
 
@@ -39,7 +39,9 @@ async def chat_with_ai(request: ChatRequest):
         return {"reply": full_text}
     except Exception as e:
         if "429" in str(e):
-            return {"reply": f"Aduh, aku lagi capek (limit tercapai). Tunggu 1 menit ya!: {str(e)}"}
+            return {"reply": f"Qouta habis :( ): {str(e)}"}
         return {"reply": f"Terjadi kesalahan sistem: {str(e)}"}
+    
 
+# uvicorn api:app --host 0.0.0.0 --port 8000 --reload untuk menjalankan server uvicorn
 # Untuk testing di browser: http://127.0.0.1:8000/docs
