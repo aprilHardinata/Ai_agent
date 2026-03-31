@@ -6,6 +6,7 @@ def hitung_kalori_makanan(nama_makanan: str, jumlah_porsi: int = 1) -> str:
     data_kalori = {
         "nasi goreng": 250,
         "telur mata sapi": 90,
+        "ayam goreng": 260,
         "nasi putih": 204,
         "sate ayam": 34,
     }
