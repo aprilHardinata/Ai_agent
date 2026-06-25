@@ -4,22 +4,28 @@ from pydantic import BaseModel
 from dotenv import load_dotenv
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langgraph.prebuilt import create_react_agent
+from langgraph.checkpoint.memory import MemorySaver
 from tools import hitung_kalori_makanan, hitung_kebutuhan_nutrisi
 load_dotenv()
 
 model = ChatGoogleGenerativeAI(model="models/gemini-2.5-flash-lite", temperature=0)
 tools = [hitung_kalori_makanan, hitung_kebutuhan_nutrisi]
-agent_executor = create_react_agent(model, tools)
+memory = MemorySaver()
+agent_executor = create_react_agent(model, tools, checkpointer=memory)
 
 app = FastAPI()
 
 class ChatRequest(BaseModel):
     message: str
+    thread_id: str = "default_thread"
 
 @app.post("/chat")
 async def chat_with_ai(request: ChatRequest):
     try:
-        response = agent_executor.invoke({"messages": [("user", request.message)]})
+        response = agent_executor.invoke(
+            {"messages": [("user", request.message)]},
+            config={"configurable": {"thread_id": request.thread_id}}
+        )
         last_message = response["messages"][-1]
         content = last_message.content
         
