@@ -18,12 +18,21 @@ app = FastAPI()
 class ChatRequest(BaseModel):
     message: str
     thread_id: str = "default_thread"
+    image_base64: str | None = None
 
 @app.post("/chat")
 async def chat_with_ai(request: ChatRequest):
     try:
+        if request.image_base64:
+            content = [
+                {"type": "text", "text": request.message},
+                {"type": "image_url", "image_url": {"url": f"data:image/jpeg;base64,{request.image_base64}"}}
+            ]
+        else:
+            content = request.message
+
         response = agent_executor.invoke(
-            {"messages": [("user", request.message)]},
+            {"messages": [("user", content)]},
             config={"configurable": {"thread_id": request.thread_id}}
         )
         last_message = response["messages"][-1]
