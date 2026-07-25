@@ -51,5 +51,3 @@ async def chat_with_ai(request: ChatRequest):
         if "429" in str(e):
             return {"reply": f"Quota habis: {str(e)}"}
         return {"reply": f"Terjadi kesalahan sistem: {str(e)}"}
-# uvicorn api:app --host 0.0.0.0 --port 8000 --reload untuk menjalankan server uvi-corn                                                                                           
-# Untuk testing di browser: http://127.0.0.1:8000/docs 
