@@ -5,13 +5,14 @@ from dotenv import load_dotenv
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langgraph.prebuilt import create_react_agent
 from langgraph.checkpoint.memory import MemorySaver
-from tools import hitung_kalori_makanan, hitung_kebutuhan_nutrisi
+from tools import hitung_kebutuhan_nutrisi
 load_dotenv()
 
 model = ChatGoogleGenerativeAI(model="models/gemini-2.5-flash-lite", temperature=0)
-tools = [hitung_kalori_makanan, hitung_kebutuhan_nutrisi]
+tools = [hitung_kebutuhan_nutrisi]
 memory = MemorySaver()
-agent_executor = create_react_agent(model, tools, checkpointer=memory)
+system_prompt = "Kamu adalah asisten AI ahli gizi. Jawab pertanyaan seputar makanan dan kalori dengan pengetahuanmu sendiri yang luas. Jangan menolak menjawab hanya karena tidak ada tool-nya."
+agent_executor = create_react_agent(model, tools, checkpointer=memory, prompt=system_prompt)
 
 app = FastAPI()
 

@@ -5,40 +5,18 @@ from langchain_core.messages import HumanMessage
 from langchain_google_genai import ChatGoogleGenerativeAI 
 from langgraph.prebuilt import create_react_agent
 from langchain.tools import tool
+from tools import hitung_kebutuhan_nutrisi
 
 load_dotenv()
 client = genai.Client(api_key=os.getenv("GOOGLE_API_KEY"))
 
-@tool
-def hitung_kalori_makanan(nama_makanan: str, jumlah_porsi: int = 1) -> str:
-    """
-    Gunakan tool ini untuk mendapatkan informasi kalori makanan Indonesia secara akurat.
-    Input: nama_makanan (string), jumlah_porsi (integer)
-    """
-
-    print("tools digunakan")
-    # Database sederhana (nanti bisa kamu sambungkan ke API asli atau SQLite)
-    data_kalori = {
-        "nasi goreng": 250,
-        "telur mata sapi": 90,
-        "ayam goreng": 260,
-        "nasi putih": 204,
-        "sate ayam": 34, # per tusuk
-    }
-    
-    makanan_key = nama_makanan.lower()
-    if makanan_key in data_kalori:
-        total = data_kalori[makanan_key] * jumlah_porsi
-        return f"Total kalori untuk {jumlah_porsi} {nama_makanan} adalah {total} kkal."
-    else:
-        return f"Maaf, data kalori untuk {nama_makanan} tidak ditemukan di database saya."
-    
 
 def main():
     model = ChatGoogleGenerativeAI(model="models/gemini-3.1-flash-lite-preview", temperature=0)
 
-    tools = [hitung_kalori_makanan]
-    agent_executor = create_react_agent(model, tools)
+    tools = [hitung_kebutuhan_nutrisi]
+    system_prompt = "Kamu adalah asisten AI ahli gizi. Jawab pertanyaan seputar makanan dan kalori dengan pengetahuanmu sendiri yang luas. Jangan menolak menjawab hanya karena tidak ada tool-nya."
+    agent_executor = create_react_agent(model, tools, prompt=system_prompt)
 
     print("--- Asisten AI RPL (Gemini Mode) ---")
     print("Ketik 'keluar' untuk stop.\n")
