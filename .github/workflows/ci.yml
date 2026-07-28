@@ -1,0 +1,33 @@
+name: Backend CI
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: Install uv
+      uses: astral-sh/setup-uv@v3
+      with:
+        version: "latest"
+        enable-cache: true
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version-file: ".python-version"
+
+    - name: Install Dependencies
+      run: uv sync
+
+    - name: Check Code Syntax
+      # Langkah ini akan mengecek apakah ada error sintaksis pada file Python
+      run: uv run python -m py_compile api.py main.py tools.py
